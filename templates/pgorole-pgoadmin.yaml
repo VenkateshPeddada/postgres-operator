@@ -1,7 +1,7 @@
 apiVersion: v1
 data:
-  permissions: "{{ .Values.pgo_admin_perms | b64encode  }}"
-  rolename: {{ .Values.pgo_admin_role_name | b64encode  }}
+  permissions: "{{ .Values.pgo_admin_perms | b64enc  }}"
+  rolename: {{ .Values.pgo_admin_role_name | b64enc  }}
 kind: Secret
 metadata:
   labels:

@@ -36,23 +36,23 @@ BackupStorage: {{ .Values.backup_storage }}
 ReplicaStorage: {{ .Values.replica_storage }}
 BackrestStorage: {{ .Values.backrest_storage }}
 Storage:
-    Name: {{ .Values.storage8_name }}
-    AccessMode:  {{ .Values.storage8_access_mode }}
-    Size:  {{ .Values.storage8_size }}
-    StorageType:  {{ .Values.storage8_type }}
-    StorageClass: {{ .Values.storage8_class }}
-    Fsgroup: {{ .Values.storage8_fs_group }}
+    gce:
+      AccessMode:  {{ .Values.storage8_access_mode }}
+      Size:  {{ .Values.storage8_size }}
+      StorageType:  {{ .Values.storage8_type }}
+      StorageClass: {{ .Values.storage8_class }}
+      Fsgroup: {{ .Values.storage8_fs_group }}
 DefaultContainerResources: {{ .Values.default_container_resources }}
 DefaultLoadResources: {{ .Values.default_load_resources }}
 DefaultRmdataResources: {{ .Values.default_rmdata_resources }}
 DefaultBackupResources: {{ .Values.default_backup_resources }}
 DefaultPgbouncerResources: {{ .Values.default_pgbouncer_resources }}
 ContainerResources:
-    Name: {{ .Values.resource2_name }}
-    RequestsMemory: {{ .Values.resource2_requests_memory }}
-    RequestsCPU: {{ .Values.resource2_requests_cpu }}
-    LimitsMemory: {{ .Values.resource2_limits_memory }}
-    LimitsCPU: {{ .Values.resource2_limits_cpu }}
+    large:
+      RequestsMemory: {{ .Values.resource2_requests_memory }}
+      RequestsCPU: {{ .Values.resource2_requests_cpu }}
+      LimitsMemory: {{ .Values.resource2_limits_memory }}
+      LimitsCPU: {{ .Values.resource2_limits_cpu }}
 Pgo:
   AutofailSleepSeconds:  {{ .Values.auto_failover_sleep_secs }}
   Audit:  false

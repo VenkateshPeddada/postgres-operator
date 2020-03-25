@@ -42,7 +42,7 @@ spec:
         - name: CRUNCHY_DEBUG
           value: "{{ .Values.crunchy_debug }}"
         - name: PORT
-          value: {{ .Values.pgo_apiserver_port }}
+          value: "{{ .Values.pgo_apiserver_port }}"
         - name: PGO_INSTALLATION_NAME
           value: "{{ .Values.pgo_installation_name }}"
         - name: PGO_OPERATOR_NAMESPACE
