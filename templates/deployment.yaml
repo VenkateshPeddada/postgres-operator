@@ -1,0 +1,138 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-operator
+  labels:
+    vendor: crunchydata
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: postgres-operator
+      vendor: crunchydata
+  template:
+    metadata:
+      labels:
+        name: postgres-operator
+        vendor: crunchydata
+    spec:
+      serviceAccountName: postgres-operator
+      containers:
+      - name: apiserver
+        image: "{{ .Values.pgo_image_prefix }}/pgo-apiserver:{{ .Values.pgo_image_tag }}"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: {{ .Values.pgo_apiserver_port }}
+        readinessProbe:
+          httpGet:
+            path: "/healthz"
+            port: {{ .Values.pgo_apiserver_port }}
+            scheme: HTTPS
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: "/healthz"
+            port: {{ .Values.pgo_apiserver_port }}
+            scheme: HTTPS
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        env:
+        - name: CRUNCHY_DEBUG
+          value: "{{ .Values.crunchy_debug }}"
+        - name: PORT
+          value: {{ .Values.pgo_apiserver_port }}
+        - name: PGO_INSTALLATION_NAME
+          value: "{{ .Values.pgo_installation_name }}"
+        - name: PGO_OPERATOR_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: TLS_CA_TRUST
+          value: "{{ .Values.pgo_tls_ca_store }}"
+        - name: TLS_NO_VERIFY
+          value: "{{ .Values.pgo_tls_no_verify }}"
+        - name: DISABLE_TLS
+          value: "{{ .Values.pgo_disable_tls }}"
+        - name: NOAUTH_ROUTES
+          value: "{{ .Values.pgo_noauth_routes }}"
+        - name: ADD_OS_TRUSTSTORE
+          value: "{{ .Values.pgo_add_os_ca_store }}"
+        - name: DISABLE_EVENTING
+          value: "{{ .Values.pgo_disable_eventing }}"
+        - name: EVENT_ADDR
+          value: localhost:4150
+        volumeMounts: []
+      - name: operator
+        image: "{{ .Values.pgo_image_prefix }}/postgres-operator:{{ .Values.pgo_image_tag }}"
+        imagePullPolicy: IfNotPresent
+        readinessProbe:
+          exec:
+            command:
+            - ls
+            - "/tmp"
+          initialDelaySeconds: 4
+          periodSeconds: 5
+        env:
+        - name: CRUNCHY_DEBUG
+          value: "{{ .Values.crunchy_debug }}"
+        - name: NAMESPACE
+          value: "{{ .Values.namespace }}"
+        - name: PGO_INSTALLATION_NAME
+          value: "{{ .Values.pgo_installation_name }}"
+        - name: PGO_OPERATOR_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: DISABLE_EVENTING
+          value: "{{ .Values.pgo_disable_eventing }}"
+        - name: EVENT_ADDR
+          value: localhost:4150
+        volumeMounts: []
+      - name: scheduler
+        image: "{{ .Values.pgo_image_prefix }}/pgo-scheduler:{{ .Values.pgo_image_tag }}"
+        livenessProbe:
+          exec:
+            command:
+            - bash
+            - "-c"
+            - test -n "$(find /tmp/scheduler.hb -newermt '61 sec ago')"
+          failureThreshold: 2
+          initialDelaySeconds: 60
+          periodSeconds: 60
+        env:
+        - name: CRUNCHY_DEBUG
+          value: "{{ .Values.crunchy_debug }}"
+        - name: PGO_OPERATOR_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: PGO_INSTALLATION_NAME
+          value: "{{ .Values.pgo_installation_name }}"
+        - name: TIMEOUT
+          value: "{{ .Values.scheduler_timeout }}"
+        - name: EVENT_ADDR
+          value: localhost:4150
+        volumeMounts: []
+        resources: {}
+        imagePullPolicy: IfNotPresent
+      - name: event
+        image: "{{ .Values.pgo_image_prefix }}/pgo-event:{{ .Values.pgo_image_tag }}"
+        livenessProbe:
+          httpGet:
+            path: "/ping"
+            port: 4151
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        env:
+        - name: TIMEOUT
+          value: '3600'
+        volumeMounts: []
+        resources: {}
+        imagePullPolicy: IfNotPresent
+      volumes: []

@@ -1,0 +1,62 @@
+{{- define "postgres-operator.config" -}}
+Cluster:
+  PrimaryNodeLabel:
+  ReplicaNodeLabel:
+  CCPImagePrefix:  {{ .Values.ccp_image_prefix }}
+  CCPImageTag:  {{ .Values.ccp_image_tag }}
+  Autofail:  {{ .Values.auto_failover }}
+  AutofailReplaceReplica:  {{ .Values.auto_failover_replace_replica }}
+  Backrest:  {{ .Values.backrest }}
+  BackrestPort:  {{ .Values.backrest_port }}
+  BackrestS3Bucket: {{ .Values.backrest_aws_s3_bucket }}
+  BackrestS3Endpoint: {{ .Values.backrest_aws_s3_endpoint }}
+  BackrestS3Region: {{ .Values.backrest_aws_s3_region }}
+  Metrics:  {{ .Values.metrics }}
+  Badger:  {{ .Values.badger }}
+  Port:  {{ .Values.db_port }}
+  PGBadgerPort: {{ .Values.pgbadgerport }}
+  ExporterPort: {{ .Values.exporterport }}
+  User:  {{ .Values.db_user}}
+  Database:  {{ .Values.db_name }}
+  PasswordAgeDays:  {{ .Values.db_password_age_days }}
+  PasswordLength:  {{ .Values.db_password_length }}
+  Strategy:  1
+  Replicas:  {{ .Values.db_replicas }}
+  ArchiveMode:  {{ .Values.archive_mode }}
+  ArchiveTimeout:  {{ .Values.archive_timeout }}
+  ServiceType:  {{ .Values.service_type }}
+  LogStatement: {{ .Values.log_statement }}
+  LogMinDurationStatement:  {{ .Values.log_min_duration_statement }}
+  EnableCrunchyadm:  {{ .Values.enable_crunchyadm }}
+  DisableReplicaStartFailReinit:  {{ .Values.disable_replica_start_fail_reinit }}
+  PodAntiAffinity:  {{ .Values.pod_anti_affinity }}
+  SyncReplication:  {{ .Values.sync_replication }}
+PrimaryStorage: {{ .Values.primary_storage }}
+BackupStorage: {{ .Values.backup_storage }}
+ReplicaStorage: {{ .Values.replica_storage }}
+BackrestStorage: {{ .Values.backrest_storage }}
+Storage:
+    Name: {{ .Values.storage8_name }}
+    AccessMode:  {{ .Values.storage8_access_mode }}
+    Size:  {{ .Values.storage8_size }}
+    StorageType:  {{ .Values.storage8_type }}
+    StorageClass: {{ .Values.storage8_class }}
+    Fsgroup: {{ .Values.storage8_fs_group }}
+DefaultContainerResources: {{ .Values.default_container_resources }}
+DefaultLoadResources: {{ .Values.default_load_resources }}
+DefaultRmdataResources: {{ .Values.default_rmdata_resources }}
+DefaultBackupResources: {{ .Values.default_backup_resources }}
+DefaultPgbouncerResources: {{ .Values.default_pgbouncer_resources }}
+ContainerResources:
+    Name: {{ .Values.resource2_name }}
+    RequestsMemory: {{ .Values.resource2_requests_memory }}
+    RequestsCPU: {{ .Values.resource2_requests_cpu }}
+    LimitsMemory: {{ .Values.resource2_limits_memory }}
+    LimitsCPU: {{ .Values.resource2_limits_cpu }}
+Pgo:
+  AutofailSleepSeconds:  {{ .Values.auto_failover_sleep_secs }}
+  Audit:  false
+  LoadTemplate:  /pgo-config/pgo.load-template.json
+  PGOImagePrefix:  {{ .Values.pgo_image_prefix }}
+  PGOImageTag:  {{ .Values.pgo_image_tag }}
+{{- end -}}

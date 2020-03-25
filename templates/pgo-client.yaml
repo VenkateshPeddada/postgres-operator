@@ -1,0 +1,54 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgo-client
+  labels:
+    vendor: crunchydata
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: pgo-client
+      vendor: crunchydata
+  template:
+    metadata:
+      labels:
+        name: pgo-client
+        vendor: crunchydata
+    spec:
+      containers:
+      - name: pgo
+        image: "{{ .Values.pgo_image_prefix }}/pgo-client:{{ .Values.pgo_image_tag }}"
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PGO_APISERVER_URL
+          value: "{{ .Values.pgo_apiserver_url }}:{{ .Values.pgo_apiserver_port }}"
+        - name: PGOUSERNAME
+          valueFrom:
+            secretKeyRef:
+              name: pgouser-{{ .Values.pgo_admin_username }}
+              key: username
+        - name: PGOUSERPASS
+          valueFrom:
+            secretKeyRef:
+              name: pgouser-{{ .Values.pgo_admin_username }}
+              key: password
+        - name: PGO_CA_CERT
+          value: pgo-tls/client.crt
+        - name: PGO_CLIENT_CERT
+          value: pgo-tls/client.crt
+        - name: PGO_CLIENT_KEY
+          value: pgo-tls/client.pem
+        volumeMounts:
+        - name: pgo-tls-volume
+          mountPath: pgo-tls
+      volumes:
+      - name: pgo-tls-volume
+        secret:
+          secretName: "{{ .Values.pgo_client_cert_secret }}"
+          items:
+          - key: tls.crt
+            path: client.crt
+          - key: tls.key
+            path: client.pem
