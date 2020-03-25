@@ -2,61 +2,107 @@
 Cluster:
   PrimaryNodeLabel:
   ReplicaNodeLabel:
-  CCPImagePrefix:  {{ .Values.ccp_image_prefix }}
-  CCPImageTag:  {{ .Values.ccp_image_tag }}
-  Autofail:  {{ .Values.auto_failover }}
-  AutofailReplaceReplica:  {{ .Values.auto_failover_replace_replica }}
-  Backrest:  {{ .Values.backrest }}
-  BackrestPort:  {{ .Values.backrest_port }}
-  BackrestS3Bucket: {{ .Values.backrest_aws_s3_bucket }}
-  BackrestS3Endpoint: {{ .Values.backrest_aws_s3_endpoint }}
-  BackrestS3Region: {{ .Values.backrest_aws_s3_region }}
-  Metrics:  {{ .Values.metrics }}
-  Badger:  {{ .Values.badger }}
-  Port:  {{ .Values.db_port }}
-  PGBadgerPort: {{ .Values.pgbadgerport }}
-  ExporterPort: {{ .Values.exporterport }}
-  User:  {{ .Values.db_user}}
-  Database:  {{ .Values.db_name }}
-  PasswordAgeDays:  {{ .Values.db_password_age_days }}
-  PasswordLength:  {{ .Values.db_password_length }}
+  CCPImagePrefix:  crunchydata
+  Metrics:  false
+  Badger:  false
+  CCPImageTag:  centos7-12.1-4.2.1
+  Port:  5432
+  PGBadgerPort: 10000
+  ExporterPort: 9187
+  User:  testuser
+  Database:  userdb
+  PasswordAgeDays:  60
+  PasswordLength:  8
   Strategy:  1
-  Replicas:  {{ .Values.db_replicas }}
-  ArchiveMode:  {{ .Values.archive_mode }}
-  ArchiveTimeout:  {{ .Values.archive_timeout }}
-  ServiceType:  {{ .Values.service_type }}
-  LogStatement: {{ .Values.log_statement }}
-  LogMinDurationStatement:  {{ .Values.log_min_duration_statement }}
-  EnableCrunchyadm:  {{ .Values.enable_crunchyadm }}
-  DisableReplicaStartFailReinit:  {{ .Values.disable_replica_start_fail_reinit }}
-  PodAntiAffinity:  {{ .Values.pod_anti_affinity }}
-  SyncReplication:  {{ .Values.sync_replication }}
-PrimaryStorage: {{ .Values.primary_storage }}
-BackupStorage: {{ .Values.backup_storage }}
-ReplicaStorage: {{ .Values.replica_storage }}
-BackrestStorage: {{ .Values.backrest_storage }}
+  Replicas:  0
+  ArchiveMode:  false
+  ArchiveTimeout:  60
+  ServiceType:  ClusterIP
+  Backrest:  true
+  BackrestPort:  2022
+  BackrestS3Bucket:
+  BackrestS3Endpoint:
+  BackrestS3Region:
+  DisableAutofail:  false
+  AutofailReplaceReplica:  false
+  LogStatement:  none
+  LogMinDurationStatement:  60000
+  PodAntiAffinity: preferred
+  SyncReplication: false
+PrimaryStorage: storageos
+BackupStorage: storageos
+ReplicaStorage: storageos
+BackrestStorage: storageos
 Storage:
-    gce:
-      AccessMode:  {{ .Values.storage8_access_mode }}
-      Size:  {{ .Values.storage8_size }}
-      StorageType:  {{ .Values.storage8_type }}
-      StorageClass: {{ .Values.storage8_class }}
-      Fsgroup: {{ .Values.storage8_fs_group }}
-DefaultContainerResources: {{ .Values.default_container_resources }}
-DefaultLoadResources: {{ .Values.default_load_resources }}
-DefaultRmdataResources: {{ .Values.default_rmdata_resources }}
-DefaultBackupResources: {{ .Values.default_backup_resources }}
-DefaultPgbouncerResources: {{ .Values.default_pgbouncer_resources }}
+  hostpathstorage:
+    AccessMode:  ReadWriteMany
+    Size:  1G
+    StorageType:  create
+  replicastorage:
+    AccessMode:  ReadWriteMany
+    Size:  700M
+    StorageType:  create
+  nfsstorage:
+    AccessMode:  ReadWriteMany
+    Size:  1G
+    StorageType:  create
+    SupplementalGroups:  65534
+  nfsstoragered:
+    AccessMode:  ReadWriteMany
+    Size:  1G
+    MatchLabels: crunchyzone=red
+    StorageType:  create
+    SupplementalGroups:  65534
+  storageos:
+    AccessMode:  ReadWriteOnce
+    Size:  300M
+    StorageType:  dynamic
+    StorageClass:  fast
+    Fsgroup:  26
+  primarysite:
+    AccessMode:  ReadWriteOnce
+    Size:  4G
+    StorageType:  dynamic
+    StorageClass:  primarysite
+    Fsgroup:  26
+  alternatesite:
+    AccessMode:  ReadWriteOnce
+    Size:  4G
+    StorageType:  dynamic
+    StorageClass:  alternatesite
+    Fsgroup:  26
+  gce:
+    AccessMode:  ReadWriteOnce
+    Size:  300M
+    StorageType:  dynamic
+    StorageClass:  standard
+    Fsgroup:  26
+  rook:
+    AccessMode:  ReadWriteOnce
+    Size:  1G
+    StorageType:  dynamic
+    StorageClass:  rook-ceph-block
+    Fsgroup:  26
+DefaultContainerResources:
+DefaultLoadResources:
+DefaultRmdataResources:
+DefaultBackupResources:
+DefaultPgbouncerResources:
 ContainerResources:
-    large:
-      RequestsMemory: {{ .Values.resource2_requests_memory }}
-      RequestsCPU: {{ .Values.resource2_requests_cpu }}
-      LimitsMemory: {{ .Values.resource2_limits_memory }}
-      LimitsCPU: {{ .Values.resource2_limits_cpu }}
+  small:
+    RequestsMemory:  512Mi
+    RequestsCPU:  0.1
+    LimitsMemory:  512Mi
+    LimitsCPU:  0.1
+  large:
+    RequestsMemory:  2Gi
+    RequestsCPU:  2.0
+    LimitsMemory:  2Gi
+    LimitsCPU:  4.0
 Pgo:
-  AutofailSleepSeconds:  {{ .Values.auto_failover_sleep_secs }}
+  AutofailSleepSeconds:  9
+  PreferredFailoverNode:
   Audit:  false
-  LoadTemplate:  /pgo-config/pgo.load-template.json
-  PGOImagePrefix:  {{ .Values.pgo_image_prefix }}
-  PGOImageTag:  {{ .Values.pgo_image_tag }}
+  PGOImagePrefix:  crunchydata
+  PGOImageTag:  centos7-4.2.1
 {{- end -}}
