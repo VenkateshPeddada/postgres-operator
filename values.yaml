@@ -11,7 +11,7 @@ pgo_installation_name: "devtest"
 
 # PGO Admin Credentials
 pgo_admin_username: "admin"
-pgo_admin_password: ""
+pgo_admin_password: "admin"
 
 # PGO Admin Role & Permissions
 pgo_admin_role_name: "pgoadmin"
@@ -229,3 +229,5 @@ prometheus_install: "false"
 pgo_apiserver_port: 8443
 # PGO Client Secret
 pgo_client_cert_secret: "pgo.tls"
+# PGO Apiserver URL - Url to be used to connect to the operator service
+pgo_apiserver_url: "https://postgres-operator"
