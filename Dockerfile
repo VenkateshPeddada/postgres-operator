@@ -38,7 +38,7 @@ RUN mkdir -p /operator && chown -R 1010:0 /operator && \
 # Copy other dependency files
 WORKDIR /operator
 RUN mkdir -p conf && chown -R 1010:0 conf
-ADD postgres-operator /operator/conf
+ADD conf /operator/conf
 
 WORKDIR /
 # Define appropriate file ownership and permissions
