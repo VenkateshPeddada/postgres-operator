@@ -1,0 +1,26 @@
+# service.yaml
+serviceYaml: |-
+  kind: Service
+  apiVersion: v1
+  metadata:
+    name: postgres-operator
+    labels:
+      name: postgres-operator
+  spec:
+    ports:
+    - name: apiserver
+      protocol: TCP
+      port: {{ .Values.pgo_apiserver_port }}
+      targetPort: {{ .Values.pgo_apiserver_port }}
+    - name: nsqadmin
+      protocol: TCP
+      port: 4171
+      targetPort: 4171
+    - name: nsqd
+      protocol: TCP
+      port: 4150
+      targetPort: 4150
+    selector:
+      name: postgres-operator
+    type: ClusterIP
+    sessionAffinity: None

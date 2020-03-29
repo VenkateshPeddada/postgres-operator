@@ -1,0 +1,61 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "postgres-operator.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "postgres-operator.name" . }}
+    helm.sh/chart: {{ include "postgres-operator.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  template:
+    metadata:
+      name: {{ include "postgres-operator.fullname" . }}
+      labels:
+        app.kubernetes.io/name: {{ include "postgres-operator.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: postgres-operator-yaml
+              mountPath: /operator
+            - name: kubeconfig
+              mountPath: /kubeconfig
+          env:
+            - name: RUN_TIME
+              value: {{ .Values.runTime | quote }}
+            - name: KUBERNETES_NAMESPACE
+              value: {{ .Values.kubernetesNamespace | quote }}
+            - name: BASE_KUBERNETES_NAMESPACE
+              value: {{ .Values.baseKubernetesNamespace | quote }}
+            - name: BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT
+              value: {{ .Values.baseKubernetesNamespaceServiceAccount | quote }}
+            - name: BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN
+              value: {{ .Values.baseKubernetesNamespaceServiceAccountToken | default "" | quote }}
+            - name: OPERATOR_COMMAND
+              value: {{ .Values.command | default "deploy" | quote }}
+            - name: OPERATOR_IMAGES
+              value: {{ .Values.image.repository | quote }}
+            - name: OPERATOR_POD
+              value: {{ .Values.podName | default "percona-xtradb-cluster-operator" | quote }}
+            - name: BACKUP_NAME
+              value: {{ .Values.backupName | default "" | quote }}
+            - name: PERCONA_OPERATOR_VERSION
+              value: {{ .Values.perconaOperatorVersion | default "1.3.0" | quote }}
+            - name: PERCONA_API_VERSION
+              value: {{ .Values.perconaApiVersion | default "v1-3-0" | quote }}
+            - name: CLUSTER_NAME
+              value: {{ .Values.clusterName | quote }}
+      volumes:
+        - name: postgres-operator-yaml
+          configMap:
+            name: {{ include "mysql-operator.fullname" . }}
+        - name: kubeconfig
+          configMap:
+            name: {{ include "mysql-operator.fullname" . }}-kubeconfig
+      restartPolicy: Never

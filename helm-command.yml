@@ -1,0 +1,5 @@
+repo: https://artifactory-lvn.broadcom.net/artifactory/helm-release-candidate-local
+chart: postgres-operator/postgres-operator-1.0.0.tgz
+values: ./values.yaml
+command: install 
+commandOptions: --wait

@@ -6,8 +6,8 @@ fullnameOverride: ""
 
 # Image used for the job that will apply the operator yaml files for the relevant command (see below)
 image:
-  repository: gcr.io/saas-rnd-reito01/gkedue1/mysql-operator/mysql-operator
-  tag: 1.0.1
+  repository: gcr.io/<gcp-project-id>/<env-name>/mysql-operator
+  tag: 0.0.1
   pullPolicy: IfNotPresent
 
 podName: percona-xtradb-cluster-operator
@@ -22,7 +22,7 @@ podName: percona-xtradb-cluster-operator
 ## update-cluster:  provide the Percona Operator and API versions and cluster name to update. Patches cluster pods to defined version.
 # Ensure the yaml in the operator folder contains what you want to apply before triggering the CD Pipeline
 # See https://www.percona.com/doc/kubernetes-operator-for-pxc/operator.html for options
-command: restore-cluster
+command: deploy-cluster
 
 # If deleting a backup, provide the name
 backupName: <backup-name>

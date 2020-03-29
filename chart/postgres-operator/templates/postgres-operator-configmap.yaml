@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "postgres-operator.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "postgres-operator.name" . }}
+    helm.sh/chart: {{ include "postgres-operator.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  deployment.yaml: {{ toYaml .Values.deploymentYaml | indent 2 }}
+  pgo.yaml: {{ toYaml .Values.pgoYaml | indent 2 }}
+  pgo-client.yaml: {{ toYaml .Values.pgoClientYaml | indent 2 }}
+  rbac.yaml: {{ toYaml .Values.rbacYaml | indent 2 }}
+  secret-backrest.yaml: {{ toYaml .Values.secretBackrestYaml | indent 2}}
+  secret-pgo-user.yaml: {{ toYaml .Values.secretPgoUserYaml | indent 2 }}
+  service.yaml: {{ toYaml .Values.serviceYaml | indent 2 }}
+ 
