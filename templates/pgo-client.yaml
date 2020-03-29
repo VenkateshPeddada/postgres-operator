@@ -24,6 +24,8 @@ spec:
         env:
         - name: PGO_APISERVER_URL
           value: "{{ .Values.pgo_apiserver_url }}:{{ .Values.pgo_apiserver_port }}"
+        - name: PGO_NAMESPACE
+          value: "{{ .Values.namespace}}"  
         - name: PGOUSERNAME
           valueFrom:
             secretKeyRef:
