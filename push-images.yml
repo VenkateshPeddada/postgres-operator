@@ -1,0 +1,8 @@
+images:
+  mysql-operator: docker-release-local.artifactory-lvn.broadcom.net/saas-devops/mysql-operator/mysql-operator:1.0.1
+  percona-xtradb-cluster-operator: docker-release-local.artifactory-lvn.broadcom.net/saas-devops/mysql-operator/percona-xtradb-cluster-operator:1.3.0
+  percona-xtradb-cluster-operator-pxc: docker-release-local.artifactory-lvn.broadcom.net/saas-devops/mysql-operator/percona-xtradb-cluster-operator-pxc:1.3.0
+  percona-xtradb-cluster-operator-proxysql: docker-release-local.artifactory-lvn.broadcom.net/saas-devops/mysql-operator/percona-xtradb-cluster-operator-proxysql:1.3.0
+  percona-xtradb-cluster-operator-backup: docker-release-local.artifactory-lvn.broadcom.net/saas-devops/mysql-operator/percona-xtradb-cluster-operator-backup:1.3.0
+  percona-xtradb-cluster-operator-pmm: docker-release-local.artifactory-lvn.broadcom.net/saas-devops/mysql-operator/percona-xtradb-cluster-operator-pmm:1.3.0
+  pmm-server: docker-release-local.artifactory-lvn.broadcom.net/saas-devops/mysql-operator/pmm-server:2.2.2

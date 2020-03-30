@@ -1,0 +1,17 @@
+project_name: "postgres-operator"
+distribute_to_bintray: "yes"
+team:
+  name: "postgres-operator"
+  token: "3744b15b-e61b-1eee-216e-752b9b3d9e85"
+email: "venkatesh.peddada@broadcom.com"
+version: "1.0"
+entrypoint: "push"
+kubernetes:
+  env:
+    name: "gkedue1"
+flowdock: 
+  flow_token: "50f1839f1a5552dfe3d2785978868ace"    
+image_scan:
+  skip_image_scan: "no"
+  severity_threshold: "warn"
+  ignore_failures: "yes"
