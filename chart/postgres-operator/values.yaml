@@ -6,8 +6,8 @@ fullnameOverride: ""
 
 # Image used for the job that will apply the operator yaml files for the relevant command (see below)
 image:
-  repository: gcr.io/<gcp-project-id>/<env-name>/mysql-operator
-  tag: 0.0.1
+  repository: gcr.io/neural-cortex-272213/postgres-operator
+  tag: 2.3.4
   pullPolicy: IfNotPresent
 
 podName: percona-xtradb-cluster-operator

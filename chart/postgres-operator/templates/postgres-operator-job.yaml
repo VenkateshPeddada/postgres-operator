@@ -30,13 +30,13 @@ spec:
             - name: RUN_TIME
               value: {{ .Values.runTime | quote }}
             - name: KUBERNETES_NAMESPACE
-              value: {{ .Values.kubernetesNamespace | quote }}
+              value: "pgo"
             - name: BASE_KUBERNETES_NAMESPACE
-              value: {{ .Values.baseKubernetesNamespace | quote }}
+              value: "pgo"
             - name: BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT
-              value: {{ .Values.baseKubernetesNamespaceServiceAccount | quote }}
+              value: "pgo"
             - name: BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN
-              value: {{ .Values.baseKubernetesNamespaceServiceAccountToken | default "" | quote }}
+              value: "eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJwZ28iLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoicGdvLXRva2VuLTcycWNjIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6InBnbyIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjJiMDBlYmQyLTcyODktMTFlYS1hMjlmLTQyMDEwYTgwMDFmNSIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpwZ286cGdvIn0.aRgytFGTG-PuC7D5OmL1MVGipu7ZRT8FGnRDqoL6QCDQavJT1lA-hh-BQ1g-tvyplKMKamqprSGVwW8JfP4r7x97gWlcAW4Wfbl_qcqLe8XokWBU9nuK5QZBtRw4mZWCWVLs5dGX4sGjTqhJJ9dHEaeKH07AndRybESfOpdxgWXeCiizrDaZH8Hv6eRCNuDjn1v3NYpl-G4DDLxaiP9C7DAoUpzZ9obMGIpKizGs-18IrttFa9kyjsYApSM-gQ_QCvd-pz15w1tqpE0VphU8lKzJJBiwvb6Deh_GBvP1RJX0sVKFdPo-y_bOWXIb84jEks_cRE6gDkDL5k6g5J8buA"
             - name: OPERATOR_COMMAND
               value: {{ .Values.command | default "deploy" | quote }}
             - name: OPERATOR_IMAGES
@@ -54,8 +54,8 @@ spec:
       volumes:
         - name: postgres-operator-yaml
           configMap:
-            name: {{ include "mysql-operator.fullname" . }}
+            name: {{ include "postgres-operator.fullname" . }}
         - name: kubeconfig
           configMap:
-            name: {{ include "mysql-operator.fullname" . }}-kubeconfig
+            name: {{ include "postgres-operator.fullname" . }}-kubeconfig
       restartPolicy: Never
