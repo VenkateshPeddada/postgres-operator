@@ -1,0 +1,53 @@
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: pgo-client
+    labels:
+      vendor: crunchydata
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        name: pgo-client
+        vendor: crunchydata
+    template:
+      metadata:
+        labels:
+          name: pgo-client
+          vendor: crunchydata
+      spec:
+        containers:
+        - name: pgo
+          image: "crunchydata/pgo-client:centos7-4.2.1"
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: PGO_APISERVER_URL
+            value: "https://postgres-operator:8443"
+          - name: PGOUSERNAME
+            valueFrom:
+              secretKeyRef:
+                name: pgouser-pgoadmin
+                key: username
+          - name: PGOUSERPASS
+            valueFrom:
+              secretKeyRef:
+                name: pgouser-pgoadmin
+                key: password
+          - name: PGO_CA_CERT
+            value: pgo-tls/client.crt
+          - name: PGO_CLIENT_CERT
+            value: pgo-tls/client.crt
+          - name: PGO_CLIENT_KEY
+            value: pgo-tls/client.pem
+          volumeMounts:
+          - name: pgo-tls-volume
+            mountPath: pgo-tls
+        volumes:
+        - name: pgo-tls-volume
+          secret:
+            secretName: "pgo.tls"
+            items:
+            - key: tls.crt
+              path: client.crt
+            - key: tls.key
+              path: client.pem

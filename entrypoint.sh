@@ -343,7 +343,7 @@ deployoperator(){
 	expenv -f $DIR/deployment.json | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
 	expenv -f $DIR/service.json | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
 
-
+	expenv -f $DIR/pgo-client.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
 }
 
 echo Processing ${OPERATOR_COMMAND} request at ${RUN_TIME}
