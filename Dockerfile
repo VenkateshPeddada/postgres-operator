@@ -30,8 +30,8 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL
 
 # Add necessary files
 ADD entrypoint.sh /entrypoint.sh
-RUN mkdir -p /operator && chown -R 1010:0 /operator && mkdir -p /odev && chown -R 1010:0 /odev && \
-	mkdir -p /odev/bin && chown -R 1010:0 /odev/bin && \
+RUN mkdir -p /operator && chown -R 1010:1010 /operator && mkdir -p /odev && chown -R 1010:1010 /odev && \
+	mkdir -p /odev/bin && chown -R 1010:1010 /odev/bin && \
     touch /operator/rbac.yml && touch /operator/secret-backrest.yaml && touch /operator/secret-pgo-user.yaml && \
 	touch /operator/deployment.yaml && touch /operator/service.yaml && touch /operator/pgo.yaml && touch /operator/pgo-client.yaml
 
@@ -49,7 +49,8 @@ ADD Makefile /Makefile
 RUN chmod +x /entrypoint.sh && chmod ugo+rwx /operator/rbac.yml && chmod ugo+rwx /operator/secret-backrest.yaml && \
     chmod ugo+rwx /operator/secret-pgo-user.yaml && chmod ugo+rwx /operator/deployment.yaml && chmod ugo+rwx /operator/service.yaml && \
     chmod ugo+rwx /operator/pgo.yaml && chmod ugo+rwx /operator/pgo-client.yaml && \
-	chown -R 1010:0 /operator/conf && chown -R 1010:0 /operator/bin && chown -R 1010:0 /operator/deploy && \
+	chown -R 1010:1010 /operator/conf && chown -R 1010:1010 /operator/bin && chown -R 1010:1010 /operator/deploy && \
+	chmod -R ugo+rwx /operator/conf/* && chmod -R ugo+rwx /operator/bin/* && chmod -R ugo+rwx /operator/deploy/* && \
     chmod ugo+rwx /Makefile && \
 	chmod ugo+rwx /operator/deploy/crd.yaml && chmod ugo+rwx /operator/deploy/pgorole-pgoadmin.yaml && \
 	chmod ugo+rwx /operator/deploy/pgouser-admin.yaml && chmod ugo+rwx /operator/deploy/cluster-roles.yaml && \
