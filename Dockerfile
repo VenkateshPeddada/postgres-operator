@@ -60,9 +60,11 @@ RUN chmod +x /entrypoint.sh && chmod ugo+rwx /operator/rbac.yml && chmod ugo+rwx
 
 
 # Install Dependecies
-RUN microdnf install golang && \ 
-	curl -S https://s3.amazonaws.com/bitly-downloads/nsq/nsq-1.1.0.linux-amd64.go1.10.3.tar.gz | \
-	tar xz --strip=2 -C /operator/bin/pgo-event/ '*/bin/*' 
+RUN microdnf install golang 
+
+# Manually included in /operator/bin/pgo-event
+#	curl -S https://s3.amazonaws.com/bitly-downloads/nsq/nsq-1.1.0.linux-amd64.go1.10.3.tar.gz | \
+#	tar xz --strip=2 -C /operator/bin/pgo-event/ '*/bin/*' 
 	
 RUN	curl -S https://raw.githubusercontent.com/golang/dep/master/install.sh | sh && \
 	microdnf install git && \
