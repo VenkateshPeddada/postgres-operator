@@ -1,5 +1,5 @@
 ## MySQL Operator CI
-FROM docker-release-local.artifactory-lvn.broadcom.net/broadcom-images/redhat/ubi-minimal:8
+FROM centos:centos8.1.1911
 
 # Switch to root. Ensure entrypoint uses 1010 (inherited from the ubi standard image)
 USER root
@@ -20,41 +20,56 @@ ENV KUBERNETES_NAMESPACE=${KUBERNETES_NAMESPACE}
 ENV BASE_KUBERNETES_NAMESPACE=${BASE_KUBERNETES_NAMESPACE}
 ENV BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT}
 ENV BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN}
+ENV GOPATH=/root/odev
+ENV GOBIN=$GOPATH/bin
+ENV PATH=$PATH:$GOBIN
 
 # Install kubectl
-RUN microdnf update -y && rm -rf /var/cache/yum && \
-    microdnf install -y wget tar gzip findutils && \
-    microdnf clean all && rm -rf /var/cache/yum && \
-    curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl && \
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl && \
     chmod +x ./kubectl && mv ./kubectl ${KUBECTL_BINARY}
 
 # Add necessary files
 ADD entrypoint.sh /entrypoint.sh
-RUN mkdir -p /operator && chown -R 1010:0 /operator && \
-    touch /operator/rbac.yml && touch /operator/secret-backrest.yaml && touch /operator/secret-pgo-user.yaml && touch /operator/deployment.yaml && touch /operator/service.yaml && touch /operator/pgo.yaml && touch /operator/pgo-client.yaml 
-	
+RUN mkdir -p /root/operator && chown -R 0:0 /root/operator && mkdir -p /root/odev && chown -R 0:0 /root/odev && \
+	mkdir -p /root/odev/bin && chown -R 0:0 /root/odev/bin && \
+    touch /root/operator/rbac.yml && touch /root/operator/secret-backrest.yaml && touch /root/operator/secret-pgo-user.yaml && \
+	touch /root/operator/deployment.yaml && touch /root/operator/service.yaml && touch /root/operator/pgo.yaml && touch /root/operator/pgo-client.yaml
+
 # Copy other dependency files
-WORKDIR /operator
-RUN mkdir -p conf && chown -R 1010:0 conf
-ADD conf /operator/conf
+RUN mkdir -p /root/operator/conf && mkdir -p /root/operator/bin && \
+	mkdir -p /root/operator/deploy 
 
-RUN mkdir -p bin && chown -R 1010:0 bin
-ADD bin /operator/bin
-
-RUN mkdir -p deploy && chown -R 1010:0 deploy
-ADD deploy /operator/deploy
-
+ADD conf /root/operator/conf
+ADD bin /root/operator/bin
+ADD deploy /root/operator/deploy
 ADD Makefile /Makefile
-RUN chmod +x /Makefile
 
-WORKDIR /
+
 # Define appropriate file ownership and permissions
-RUN chmod +x /entrypoint.sh && chmod ugo+rwx /operator/rbac.yml && chmod ugo+rwx /operator/secret-backrest.yaml && \
-    chmod ugo+rwx /operator/secret-pgo-user.yaml && chmod ugo+rwx /operator/deployment.yaml && chmod ugo+rwx /operator/service.yaml && \
-    chmod ugo+rwx /operator/pgo.yaml && chmod ugo+rwx /operator/pgo-client.yaml 
+RUN chmod +x /entrypoint.sh && chmod ugo+rwx /root/operator/rbac.yml && chmod ugo+rwx /root/operator/secret-backrest.yaml && \
+    chmod ugo+rwx /root/operator/secret-pgo-user.yaml && chmod ugo+rwx /root/operator/deployment.yaml && chmod ugo+rwx /root/operator/service.yaml && \
+    chmod ugo+rwx /root/operator/pgo.yaml && chmod ugo+rwx /root/operator/pgo-client.yaml && \
+	chown -R 0:0 /root/operator/conf && chown -R 0:0 /root/operator/bin && chown -R 0:0 /root/operator/deploy && \
+#	chmod -R ugo+rwx /root/operator/conf/* && chmod -R ugo+rwx /root/operator/bin/* && chmod -R ugo+rwx /root/operator/deploy/* && \
+    chmod ugo+rwx /Makefile && \
+	chmod ugo+rwx /root/operator/deploy/crd.yaml && chmod ugo+rwx /root/operator/deploy/pgorole-pgoadmin.yaml && \
+	chmod ugo+rwx /root/operator/deploy/pgouser-admin.yaml && chmod ugo+rwx /root/operator/deploy/cluster-roles.yaml && \
+	chmod ugo+rwx /root/operator/deploy/service-accounts.yaml && chmod ugo+rwx /root/operator/deploy/cluster-role-bindings.yaml && \
+	chmod ugo+rwx /root/operator/deploy/roles.yaml && chmod ugo+rwx /root/operator/deploy/role-bindings.yaml && \
+	chmod ugo+rwx /root/operator/deploy/gen-api-keys.sh && chmod ugo+rwx /root/operator/deploy/gen-sshd-keys.sh
+
+
+# Install Dependecies
+RUN yum -y install golang && \ 
+	curl -S https://s3.amazonaws.com/bitly-downloads/nsq/nsq-1.1.0.linux-amd64.go1.10.3.tar.gz | \
+	tar xz --strip=2 -C /root/operator/bin/pgo-event/ '*/bin/*' 
+	
+RUN	curl -S https://raw.githubusercontent.com/golang/dep/master/install.sh | sh && \
+	yum install -y git && \
+	go get github.com/blang/expenv
 
 # Use the default user with UID of 1010 (inherited from the Broadcom base image)
-USER 1010
+USER root
 
 # Set working directory
 WORKDIR /
