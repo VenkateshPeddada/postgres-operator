@@ -38,7 +38,7 @@ operator_pod_running() {
 setup(){
 
 	echo "Ensuring project dependencies..."
-	EVTDIR="/operator/bin/pgo-event"
+	EVTDIR="/home/default/operator/bin/pgo-event"
 
 	mkdir $GOPATH
 	chmod 775 $GOPATH
@@ -135,7 +135,7 @@ setup(){
 
 installrbac(){
 
-	DIR="/operator/deploy"
+	DIR="/home/default/operator/deploy"
 	
 	#$DIR/cleanup-rbac.sh
 	cleanup_rbac
@@ -219,7 +219,7 @@ cleanup_rbac(){
 }
 
 install_bootstrap_creds(){
-	DIR="/operator/deploy"
+	DIR="/home/default/operator/deploy"
 	# fill out these variables if you want to change the
 	# default pgo bootstrap user and role
 	export PGOADMIN_USERNAME=pgoadmin
@@ -290,7 +290,7 @@ setupnamespaces(){
 
 deployoperator(){
 
-	DIR="/operator/deploy"
+	DIR="/home/default/operator/deploy"
 	
 
 	$DIR/cleanup.sh
@@ -361,7 +361,7 @@ export NAMESPACE=pgo
 export PGO_INSTALLATION_NAME=dev
 export PGO_OPERATOR_NAMESPACE=pgo
 export PGO_CMD=kubectl_token
-export PGOROOT=/operator
+export PGOROOT=/home/default/operator
 export PGO_IMAGE_PREFIX=crunchydata
 export PGO_BASEOS=centos7
 export PGO_VERSION=4.2.1
@@ -393,18 +393,18 @@ case "${OPERATOR_COMMAND}" in
     # Apply secrets Credentials
 	cd /
 	#setup;
-	#/operator/bin/get-deps.sh
+	#/home/default/operator/bin/get-deps.sh
 	#echo setup is called
 	cd /
-	#cd /operator/deploy && ./setupnamespaces.sh
+	#cd /home/default/operator/deploy && ./setupnamespaces.sh
 	setupnamespaces;
 	echo setupnamespaces is called
 	cd /
-	#cd /operator/deploy && ./install-rbac.sh
+	#cd /home/default/operator/deploy && ./install-rbac.sh
 	installrbac;
 	echo installrbac is called
 	cd /
-	#cd /operator/deploy && ./deploy.sh
+	#cd /home/default/operator/deploy && ./deploy.sh
 	deployoperator;
 	echo deployoperator is called
 	cd /
@@ -417,7 +417,7 @@ case "${OPERATOR_COMMAND}" in
 
     # Apply Cluster
     echo RUN PGO command in ${KUBERNETES_NAMESPACE} namespace
-    #kubectl_token apply -f /operator/cr.yaml
+    #kubectl_token apply -f /home/default/operator/cr.yaml
 	pod_name = kubectl get pods -n ${KUBERNETES_NAMESPACE} -o jsonpath="{.items[0].metadata.name}" | grep pgo-client	
 	kubectl_token exec  ${pod_name} -n ${KUBERNETES_NAMESPACE} -- pgo create cluster ${CLUSTER_NAME}
 	
@@ -432,7 +432,7 @@ case "${OPERATOR_COMMAND}" in
 
     # Apply backup
     echo Applying backup.yaml in ${KUBERNETES_NAMESPACE} namespace
-    kubectl_token apply -f /operator/backup.yaml
+    kubectl_token apply -f /home/default/operator/backup.yaml
     sleep 10
 
 ;;
@@ -445,7 +445,7 @@ case "${OPERATOR_COMMAND}" in
 
     # Apply restore
     echo Applying restore.yaml in ${KUBERNETES_NAMESPACE} namespace
-    kubectl_token apply -f /operator/restore.yaml
+    kubectl_token apply -f /home/default/operator/restore.yaml
     sleep 10
 ;;
 'delete-cluster')
@@ -457,7 +457,7 @@ case "${OPERATOR_COMMAND}" in
 
     # Apply delete
     echo Deleting cr.yaml in ${KUBERNETES_NAMESPACE} namespace
-    kubectl_token delete -f /operator/cr.yaml
+    kubectl_token delete -f /home/default/operator/cr.yaml
     sleep 10
 ;;
 'list-backups')

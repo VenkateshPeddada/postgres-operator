@@ -30,41 +30,41 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL
 
 # Add necessary files
 ADD entrypoint.sh /entrypoint.sh
-RUN mkdir -p /operator && chown -R 1010:1010 /operator && mkdir -p /odev && chown -R 1010:1010 /odev && \
+RUN mkdir -p /home/default/operator && chown -R 1010:1010 /home/default/operator && mkdir -p /odev && chown -R 1010:1010 /odev && \
 	mkdir -p /odev/bin && chown -R 1010:1010 /odev/bin && \
-    touch /operator/rbac.yml && touch /operator/secret-backrest.yaml && touch /operator/secret-pgo-user.yaml && \
-	touch /operator/deployment.yaml && touch /operator/service.yaml && touch /operator/pgo.yaml && touch /operator/pgo-client.yaml
+    touch /home/default/operator/rbac.yml && touch /home/default/operator/secret-backrest.yaml && touch /home/default/operator/secret-pgo-user.yaml && \
+	touch /home/default/operator/deployment.yaml && touch /home/default/operator/service.yaml && touch /home/default/operator/pgo.yaml && touch /home/default/operator/pgo-client.yaml
 
 # Copy other dependency files
-RUN mkdir -p /operator/conf && mkdir -p /operator/bin && \
-	mkdir -p /operator/deploy 
+RUN mkdir -p /home/default/operator/conf && mkdir -p /home/default/operator/bin && \
+	mkdir -p /home/default/operator/deploy 
 
-ADD conf /operator/conf
-ADD bin /operator/bin
-ADD deploy /operator/deploy
+ADD conf /home/default/operator/conf
+ADD bin /home/default/operator/bin
+ADD deploy /home/default/operator/deploy
 ADD Makefile /Makefile
 
 
 # Define appropriate file ownership and permissions
-RUN chmod +x /entrypoint.sh && chmod ugo+rwx /operator/rbac.yml && chmod ugo+rwx /operator/secret-backrest.yaml && \
-    chmod ugo+rwx /operator/secret-pgo-user.yaml && chmod ugo+rwx /operator/deployment.yaml && chmod ugo+rwx /operator/service.yaml && \
-    chmod ugo+rwx /operator/pgo.yaml && chmod ugo+rwx /operator/pgo-client.yaml && \
-	chown -R 1010:1010 /operator/conf && chown -R 1010:1010 /operator/bin && chown -R 1010:1010 /operator/deploy && \
-	chmod -R ugo+rwx /operator/conf/* && chmod -R ugo+rwx /operator/bin/* && chmod -R ugo+rwx /operator/deploy/* && \
+RUN chmod +x /entrypoint.sh && chmod ugo+rwx /home/default/operator/rbac.yml && chmod ugo+rwx /home/default/operator/secret-backrest.yaml && \
+    chmod ugo+rwx /home/default/operator/secret-pgo-user.yaml && chmod ugo+rwx /home/default/operator/deployment.yaml && chmod ugo+rwx /home/default/operator/service.yaml && \
+    chmod ugo+rwx /home/default/operator/pgo.yaml && chmod ugo+rwx /home/default/operator/pgo-client.yaml && \
+	chown -R 1010:1010 /home/default/operator/conf && chown -R 1010:1010 /home/default/operator/bin && chown -R 1010:1010 /home/default/operator/deploy && \
+	chmod -R ugo+rwx /home/default/operator/conf/* && chmod -R ugo+rwx /home/default/operator/bin/* && chmod -R ugo+rwx /home/default/operator/deploy/* && \
     chmod ugo+rwx /Makefile && \
-	chmod ugo+rwx /operator/deploy/crd.yaml && chmod ugo+rwx /operator/deploy/pgorole-pgoadmin.yaml && \
-	chmod ugo+rwx /operator/deploy/pgouser-admin.yaml && chmod ugo+rwx /operator/deploy/cluster-roles.yaml && \
-	chmod ugo+rwx /operator/deploy/service-accounts.yaml && chmod ugo+rwx /operator/deploy/cluster-role-bindings.yaml && \
-	chmod ugo+rwx /operator/deploy/roles.yaml && chmod ugo+rwx /operator/deploy/role-bindings.yaml && \
-	chmod ugo+rwx /operator/deploy/gen-api-keys.sh && chmod ugo+rwx /operator/deploy/gen-sshd-keys.sh
+	chmod ugo+rwx /home/default/operator/deploy/crd.yaml && chmod ugo+rwx /home/default/operator/deploy/pgorole-pgoadmin.yaml && \
+	chmod ugo+rwx /home/default/operator/deploy/pgouser-admin.yaml && chmod ugo+rwx /home/default/operator/deploy/cluster-roles.yaml && \
+	chmod ugo+rwx /home/default/operator/deploy/service-accounts.yaml && chmod ugo+rwx /home/default/operator/deploy/cluster-role-bindings.yaml && \
+	chmod ugo+rwx /home/default/operator/deploy/roles.yaml && chmod ugo+rwx /home/default/operator/deploy/role-bindings.yaml && \
+	chmod ugo+rwx /home/default/operator/deploy/gen-api-keys.sh && chmod ugo+rwx /home/default/operator/deploy/gen-sshd-keys.sh
 
 
 # Install Dependecies
 RUN microdnf install golang 
 
-# Manually included in /operator/bin/pgo-event
+# Manually included in /home/default/operator/bin/pgo-event
 #	curl -S https://s3.amazonaws.com/bitly-downloads/nsq/nsq-1.1.0.linux-amd64.go1.10.3.tar.gz | \
-#	tar xz --strip=2 -C /operator/bin/pgo-event/ '*/bin/*' 
+#	tar xz --strip=2 -C /home/default/operator/bin/pgo-event/ '*/bin/*' 
 	
 RUN	curl -S https://raw.githubusercontent.com/golang/dep/master/install.sh | sh && \
 	microdnf install git && \
