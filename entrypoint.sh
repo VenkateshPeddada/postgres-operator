@@ -414,8 +414,10 @@ case "${OPERATOR_COMMAND}" in
     then
 	exit 1
     fi
-
-    # Apply Cluster
+	
+	sleep 20
+    
+	# Apply Cluster
     echo RUN PGO command in ${KUBERNETES_NAMESPACE} namespace
     #kubectl_token apply -f /home/default/operator/cr.yaml
 	pod_name=`kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} get pod -l name=pgo-client -o jsonpath="{.items[0].metadata.name}" -n ${KUBERNETES_NAMESPACE}`
