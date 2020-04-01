@@ -49,12 +49,17 @@ RUN chmod +x /entrypoint.sh && \
 	chmod -R ugo+rwx /home/default/operator/conf/* && \
 	chmod -R ugo+rwx /home/default/operator/bin/* && \
 	chmod -R ugo+rwx /home/default/operator/deploy/* && \
-	chmod ugo+rwx /home/default/operator/conf/postgres-operator/pgo.yaml && chmod ugo+rwx /home/default/operator/deploy/pgorole-pgoadmin.yaml && \
-	chmod ugo+rwx /home/default/operator/deploy/pgouser-admin.yaml && chmod ugo+rwx /home/default/operator/deploy/cluster-roles.yaml && \
-	chmod ugo+rwx /home/default/operator/deploy/service-accounts.yaml && chmod ugo+rwx /home/default/operator/deploy/cluster-role-bindings.yaml && \
-	chmod ugo+rwx /home/default/operator/deploy/roles.yaml && chmod ugo+rwx /home/default/operator/deploy/role-bindings.yaml && \
-	chmod ugo+rwx /home/default/operator/deploy/deployment.yaml && chmod ugo+rwx /home/default/operator/deploy/service.yaml && \
-	chmod ugo+rwx /home/default/operator/deploy/pgo-client.yaml
+	chmod ugo+rwx /home/default/operator/conf/postgres-operator/configmap-yaml/pgo.yaml && \
+	chmod ugo+rwx /home/default/operator/deploy/configmap-yaml/pgorole-pgoadmin.yaml && \
+	chmod ugo+rwx /home/default/operator/deploy/configmap-yaml/pgouser-admin.yaml && \
+	chmod ugo+rwx /home/default/operator/deploy/configmap-yaml/cluster-roles.yaml && \
+	chmod ugo+rwx /home/default/operator/deploy/configmap-yaml/service-accounts.yaml && \
+	chmod ugo+rwx /home/default/operator/deploy/configmap-yaml/cluster-role-bindings.yaml && \
+	chmod ugo+rwx /home/default/operator/deploy/configmap-yaml/roles.yaml && \
+	chmod ugo+rwx /home/default/operator/deploy/configmap-yaml/role-bindings.yaml && \
+	chmod ugo+rwx /home/default/operator/deploy/configmap-yaml/deployment.yaml && \
+	chmod ugo+rwx /home/default/operator/deploy/configmap-yaml/service.yaml && \
+	chmod ugo+rwx /home/default/operator/deploy/configmap-yaml/pgo-client.yaml
 
 # Install Dependecies
 RUN microdnf install golang 
