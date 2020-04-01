@@ -7,6 +7,7 @@ pgoClientYaml: |-
     labels:
       name: pgo-client
       vendor: crunchydata
+      test: config
   spec:
     replicas: 1
     selector:
@@ -42,6 +43,8 @@ pgoClientYaml: |-
             value: pgo-tls/client.crt
           - name: PGO_CLIENT_KEY
             value: pgo-tls/client.pem
+          - name: PGO_NAMESPACE
+            value: $PGO_OPERATOR_NAMESPACE
           volumeMounts:
           - name: pgo-tls-volume
             mountPath: pgo-tls
