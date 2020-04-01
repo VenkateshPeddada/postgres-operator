@@ -42,14 +42,14 @@ ADD deploy /home/default/operator/deploy
 
 
 # Define appropriate file ownership and permissions
-RUN chmod +x /entrypoint.sh && 
+RUN chmod +x /entrypoint.sh && \
 	chown -R 1010:1010 /home/default/operator/conf && \
 	chown -R 1010:1010 /home/default/operator/bin && \
 	chown -R 1010:1010 /home/default/operator/deploy && \
 	chmod -R ugo+rwx /home/default/operator/conf/* && \
 	chmod -R ugo+rwx /home/default/operator/bin/* && \
 	chmod -R ugo+rwx /home/default/operator/deploy/* && \
-	chmod ugo+rwx /home/default/operator/deploy/pgo.yaml && chmod ugo+rwx /home/default/operator/deploy/pgorole-pgoadmin.yaml && \
+	chmod ugo+rwx /home/default/operator/conf/postgres-operator/pgo.yaml && chmod ugo+rwx /home/default/operator/deploy/pgorole-pgoadmin.yaml && \
 	chmod ugo+rwx /home/default/operator/deploy/pgouser-admin.yaml && chmod ugo+rwx /home/default/operator/deploy/cluster-roles.yaml && \
 	chmod ugo+rwx /home/default/operator/deploy/service-accounts.yaml && chmod ugo+rwx /home/default/operator/deploy/cluster-role-bindings.yaml && \
 	chmod ugo+rwx /home/default/operator/deploy/roles.yaml && chmod ugo+rwx /home/default/operator/deploy/role-bindings.yaml && \

@@ -418,8 +418,8 @@ case "${OPERATOR_COMMAND}" in
     # Apply Cluster
     echo RUN PGO command in ${KUBERNETES_NAMESPACE} namespace
     #kubectl_token apply -f /home/default/operator/cr.yaml
-	pod_name = kubectl get pods -n ${KUBERNETES_NAMESPACE} -o jsonpath="{.items[0].metadata.name}" | grep pgo-client	
-	kubectl_token exec  ${pod_name} -n ${KUBERNETES_NAMESPACE} -- pgo create cluster ${CLUSTER_NAME}
+	pod_name=`kubectl get pod -l name=pgo-client -o jsonpath="{.items[0].metadata.name}" -n ${KUBERNETES_NAMESPACE}`
+	kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} exec  ${pod_name} -n ${KUBERNETES_NAMESPACE} -- pgo create cluster ${CLUSTER_NAME}
 	
     sleep 10
 ;;
