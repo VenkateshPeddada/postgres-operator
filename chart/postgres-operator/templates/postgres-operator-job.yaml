@@ -23,9 +23,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: postgres-operator-yaml
-              mountPath: /operator/deploy
+              mountPath: /home/default/operator/deploy/configmap-yaml
             - name: postgres-operator-conf-yaml
-              mountPath: /operator/conf
+              mountPath: /home/default/operator/conf/configmap-yaml
             - name: kubeconfig
               mountPath: /kubeconfig
           env:
