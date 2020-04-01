@@ -21,4 +21,4 @@ clusterRolesYaml: |-
         - '*'
       resources:
         - nodes
-  
+

@@ -14,4 +14,4 @@ pgorolePgoadminYaml: |-
     name: pgorole-$PGOADMIN_ROLENAME
     namespace: $PGO_OPERATOR_NAMESPACE
   type: Opaque
-  
+

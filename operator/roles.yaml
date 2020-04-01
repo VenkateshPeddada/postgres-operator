@@ -50,4 +50,4 @@ rolesYaml: |-
         - 'batch'
       resources:
         - jobs
-  
+

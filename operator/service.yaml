@@ -24,4 +24,4 @@ serviceYaml: |-
       name: postgres-operator
     type: ClusterIP
     sessionAffinity: None
-  
+

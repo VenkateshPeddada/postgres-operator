@@ -15,5 +15,4 @@ pgouserAdminYaml: |-
     name: pgouser-$PGOADMIN_USERNAME
     namespace: $PGO_OPERATOR_NAMESPACE
   type: Opaque
-  
-  
+
