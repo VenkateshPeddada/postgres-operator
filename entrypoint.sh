@@ -151,11 +151,11 @@ installrbac(){
 	install_bootstrap_creds
 
 	# create the cluster roles one time for the entire Kube cluster
-	expenv -f $DIR/cluster-roles.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} create -f -
+	expenv -f $DIR/configmap-yaml/cluster-roles.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} create -f -
 
 
 	# create the Operator service accounts
-	expenv -f $DIR/service-accounts.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
+	expenv -f $DIR/configmap-yaml/service-accounts.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
 
 	if [ -r "$PGO_IMAGE_PULL_SECRET_MANIFEST" ]; then
 		kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} -n $PGO_OPERATOR_NAMESPACE create -f "$PGO_IMAGE_PULL_SECRET_MANIFEST"
@@ -170,10 +170,10 @@ installrbac(){
 	# create the cluster role bindings to the Operator service accounts
 	# postgres-operator and pgo-backrest, here we are assuming a single
 	# Operator in the PGO_OPERATOR_NAMESPACE env variable
-	expenv -f $DIR/cluster-role-bindings.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
+	expenv -f $DIR/configmap-yaml/cluster-role-bindings.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
 
-	expenv -f $DIR/roles.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} -n $PGO_OPERATOR_NAMESPACE create -f -
-	expenv -f $DIR/role-bindings.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} -n $PGO_OPERATOR_NAMESPACE create -f -
+	expenv -f $DIR/configmap-yaml/roles.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} -n $PGO_OPERATOR_NAMESPACE create -f -
+	expenv -f $DIR/configmap-yaml/role-bindings.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} -n $PGO_OPERATOR_NAMESPACE create -f -
 
 	# create the keys used for pgo API
 	source $DIR/gen-api-keys.sh
@@ -233,14 +233,14 @@ install_bootstrap_creds(){
 		kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} delete secret pgorole-$PGOADMIN_ROLENAME -n $PGO_OPERATOR_NAMESPACE
 	fi
 
-	expenv -f $DIR/pgorole-pgoadmin.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} create -f -
+	expenv -f $DIR/configmap-yaml/pgorole-pgoadmin.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} create -f -
 
 	# see if the bootstrap pgouser Secret exists or not, deleting it if found
 	kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} get secret pgouser-$PGOADMIN_USERNAME -n $PGO_OPERATOR_NAMESPACE  2> /dev/null > /dev/null
 	if [ $? -eq 0 ]; then
 		kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} delete secret pgouser-$PGOADMIN_USERNAME -n $PGO_OPERATOR_NAMESPACE
 	fi
-	expenv -f $DIR/pgouser-admin.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} create -f -
+	expenv -f $DIR/configmap-yaml/pgouser-admin.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} create -f -
 }
 
 
@@ -324,7 +324,8 @@ deployoperator(){
 	kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create secret tls pgo.tls --key=$PGOROOT/conf/postgres-operator/server.key --cert=$PGOROOT/conf/postgres-operator/server.crt
 
 	kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create configmap pgo-config \
-		--from-file=$PGOROOT/conf/postgres-operator
+		--from-file=$PGOROOT/conf/postgres-operator \
+		--from-file=pgo.yaml=$PGOROOT/conf/postgres-operator/configmap-yaml/pgo.yaml
 
 
 	#
@@ -340,10 +341,10 @@ deployoperator(){
 	#
 	# create the postgres-operator Deployment and Service
 	#
-	expenv -f $DIR/deployment.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
-	expenv -f $DIR/service.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
+	expenv -f $DIR/configmap-yaml/deployment.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
+	expenv -f $DIR/configmap-yaml/service.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
 
-	expenv -f $DIR/pgo-client.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
+	expenv -f $DIR/configmap-yaml/pgo-client.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
 }
 
 echo Processing ${OPERATOR_COMMAND} request at ${RUN_TIME}
