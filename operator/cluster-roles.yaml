@@ -1,22 +1,24 @@
----
-kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: pgo-cluster-role
-rules:
-  - verbs:
-      - '*'
-    apiGroups:
-      - '*'
-    resources:
-      - namespaces
-      - serviceaccounts
-      - roles
-      - rolebindings
-  - verbs:
-      - 'list'
-      - 'get'
-    apiGroups:
-      - '*'
-    resources:
-      - nodes
+# cluster-roles.yaml
+clusterRolesYaml: |-
+  kind: ClusterRole
+  apiVersion: rbac.authorization.k8s.io/v1
+  metadata:
+    name: pgo-cluster-role
+  rules:
+    - verbs:
+        - '*'
+      apiGroups:
+        - '*'
+      resources:
+        - namespaces
+        - serviceaccounts
+        - roles
+        - rolebindings
+    - verbs:
+        - 'list'
+        - 'get'
+      apiGroups:
+        - '*'
+      resources:
+        - nodes
+  

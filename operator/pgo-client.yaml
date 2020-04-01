@@ -1,3 +1,5 @@
+# pgo-client.yaml
+pgoClientYaml: |-
   apiVersion: apps/v1
   kind: Deployment
   metadata:
