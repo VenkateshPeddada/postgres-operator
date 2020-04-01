@@ -30,10 +30,10 @@ pgoYaml: |-
     LogMinDurationStatement:  60000
     PodAntiAffinity: preferred
     SyncReplication: false
-  PrimaryStorage: storageos
-  BackupStorage: storageos
-  ReplicaStorage: storageos
-  BackrestStorage: storageos
+  PrimaryStorage: gce
+  BackupStorage: gce
+  ReplicaStorage: gce
+  BackrestStorage: gce
   Storage:
     hostpathstorage:
       AccessMode:  ReadWriteMany

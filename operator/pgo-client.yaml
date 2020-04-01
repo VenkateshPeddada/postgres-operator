@@ -7,7 +7,6 @@ pgoClientYaml: |-
     labels:
       name: pgo-client
       vendor: crunchydata
-      test: config
   spec:
     replicas: 1
     selector:
