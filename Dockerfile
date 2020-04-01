@@ -12,6 +12,7 @@ ARG KUBECTL_BINARY="/usr/local/bin/kubectl"
 ENV OPERATOR_COMMAND=${OPERATOR_COMMAND}
 ENV OPERATOR_IMAGES=${OPERATOR_IMAGES}
 ENV OPERATOR_POD=${OPERATOR_POD}
+ENV OPERATOR_CLIENT_POD=${OPERATOR_CLIENT_POD}
 ENV BACKUP_NAME=${BACKUP_NAME}
 ENV CLUSTER_NAME=${CLUSTER_NAME}
 ENV OPERATOR_IMAGES=${OPERATOR_IMAGES}
@@ -31,33 +32,29 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL
 # Add necessary files
 ADD entrypoint.sh /entrypoint.sh
 RUN mkdir -p /home/default/operator && chown -R 1010:1010 /home/default/operator && mkdir -p /odev && chown -R 1010:1010 /odev && \
-	mkdir -p /odev/bin && chown -R 1010:1010 /odev/bin && \
-    touch /home/default/operator/rbac.yml && touch /home/default/operator/secret-backrest.yaml && touch /home/default/operator/secret-pgo-user.yaml && \
-	touch /home/default/operator/deployment.yaml && touch /home/default/operator/service.yaml && touch /home/default/operator/pgo.yaml && touch /home/default/operator/pgo-client.yaml
-
-# Copy other dependency files
-RUN mkdir -p /home/default/operator/conf && mkdir -p /home/default/operator/bin && \
+	mkdir -p /odev/bin && chown -R 1010:1010 /odev/bin && mkdir -p /home/default/operator/conf && mkdir -p /home/default/operator/bin && \
 	mkdir -p /home/default/operator/deploy 
-
+	
+# Copy other dependency files
 ADD conf /home/default/operator/conf
 ADD bin /home/default/operator/bin
 ADD deploy /home/default/operator/deploy
-ADD Makefile /Makefile
 
 
 # Define appropriate file ownership and permissions
-RUN chmod +x /entrypoint.sh && chmod ugo+rwx /home/default/operator/rbac.yml && chmod ugo+rwx /home/default/operator/secret-backrest.yaml && \
-    chmod ugo+rwx /home/default/operator/secret-pgo-user.yaml && chmod ugo+rwx /home/default/operator/deployment.yaml && chmod ugo+rwx /home/default/operator/service.yaml && \
-    chmod ugo+rwx /home/default/operator/pgo.yaml && chmod ugo+rwx /home/default/operator/pgo-client.yaml && \
-	chown -R 1010:1010 /home/default/operator/conf && chown -R 1010:1010 /home/default/operator/bin && chown -R 1010:1010 /home/default/operator/deploy && \
-	chmod -R ugo+rwx /home/default/operator/conf/* && chmod -R ugo+rwx /home/default/operator/bin/* && chmod -R ugo+rwx /home/default/operator/deploy/* && \
-    chmod ugo+rwx /Makefile && \
-	chmod ugo+rwx /home/default/operator/deploy/crd.yaml && chmod ugo+rwx /home/default/operator/deploy/pgorole-pgoadmin.yaml && \
+RUN chmod +x /entrypoint.sh && 
+	chown -R 1010:1010 /home/default/operator/conf && \
+	chown -R 1010:1010 /home/default/operator/bin && \
+	chown -R 1010:1010 /home/default/operator/deploy && \
+	chmod -R ugo+rwx /home/default/operator/conf/* && \
+	chmod -R ugo+rwx /home/default/operator/bin/* && \
+	chmod -R ugo+rwx /home/default/operator/deploy/* && \
+	chmod ugo+rwx /home/default/operator/deploy/pgo.yaml && chmod ugo+rwx /home/default/operator/deploy/pgorole-pgoadmin.yaml && \
 	chmod ugo+rwx /home/default/operator/deploy/pgouser-admin.yaml && chmod ugo+rwx /home/default/operator/deploy/cluster-roles.yaml && \
 	chmod ugo+rwx /home/default/operator/deploy/service-accounts.yaml && chmod ugo+rwx /home/default/operator/deploy/cluster-role-bindings.yaml && \
 	chmod ugo+rwx /home/default/operator/deploy/roles.yaml && chmod ugo+rwx /home/default/operator/deploy/role-bindings.yaml && \
-	chmod ugo+rwx /home/default/operator/deploy/gen-api-keys.sh && chmod ugo+rwx /home/default/operator/deploy/gen-sshd-keys.sh
-
+	chmod ugo+rwx /home/default/operator/deploy/deployment.yaml && chmod ugo+rwx /home/default/operator/deploy/service.yaml && \
+	chmod ugo+rwx /home/default/operator/deploy/pgo-client.yaml
 
 # Install Dependecies
 RUN microdnf install golang 

@@ -141,10 +141,10 @@ installrbac(){
 	cleanup_rbac
 	
 	# see if CRDs need to be created
-	kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} get crd pgclusters.crunchydata.com > /dev/null
-	if [ $? -eq 1 ]; then
-		kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} create -f $DIR/crd.yaml
-	fi
+	#kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} get crd pgclusters.crunchydata.com > /dev/null
+	#if [ $? -eq 1 ]; then
+	#	kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} create -f $DIR/crd.yaml
+	#fi
 
 	# create the initial pgo admin credential
 	#$DIR/install-bootstrap-creds.sh
@@ -340,8 +340,8 @@ deployoperator(){
 	#
 	# create the postgres-operator Deployment and Service
 	#
-	expenv -f $DIR/deployment.json | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
-	expenv -f $DIR/service.json | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
+	expenv -f $DIR/deployment.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
+	expenv -f $DIR/service.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
 
 	expenv -f $DIR/pgo-client.yaml | kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} --namespace=$PGO_OPERATOR_NAMESPACE create -f -
 }

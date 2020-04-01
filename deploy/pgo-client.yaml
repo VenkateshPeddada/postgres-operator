@@ -3,6 +3,7 @@
   metadata:
     name: pgo-client
     labels:
+      name: pgo-client
       vendor: crunchydata
   spec:
     replicas: 1
