@@ -8,11 +8,13 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
-  deployment.yaml: {{ toYaml .Values.deploymentYaml | indent 2 }}
-  pgo.yaml: {{ toYaml .Values.pgoYaml | indent 2 }}
+  pgorole-pgoadmin.yaml: {{ toYaml .Values.pgorolePgoadminYaml | indent 2 }}
+  pgouser-admin.yaml: {{ toYaml .Values.pgouserAdminYaml | indent 2 }}
+  cluster-roles.yaml: {{ toYaml .Values.clusterRolesYaml | indent 2 }}
+  cluster-role-bindings.yaml: {{ toYaml .Values.clusterRoleBindingsYaml | indent 2}}
+  service-accounts.yaml: {{ toYaml .Values.serviceAccountsYaml | indent 2 }}
+  roles.yaml: {{ toYaml .Values.rolesYaml | indent 2 }}
+  role-bindings.yaml: {{ toYaml .Values.roleBindingsYaml | indent 2 }} 
+  deployment.yaml: {{ toYaml .Values.deploymentYaml | indent 2 }} 
+  service.yaml: {{ toYaml .Values.serviceYaml | indent 2 }} 
   pgo-client.yaml: {{ toYaml .Values.pgoClientYaml | indent 2 }}
-  rbac.yaml: {{ toYaml .Values.rbacYaml | indent 2 }}
-  secret-backrest.yaml: {{ toYaml .Values.secretBackrestYaml | indent 2}}
-  secret-pgo-user.yaml: {{ toYaml .Values.secretPgoUserYaml | indent 2 }}
-  service.yaml: {{ toYaml .Values.serviceYaml | indent 2 }}
- 

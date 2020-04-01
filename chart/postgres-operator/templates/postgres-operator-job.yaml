@@ -23,7 +23,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: postgres-operator-yaml
-              mountPath: /operator
+              mountPath: /operator/deploy
+            - name: postgres-operator-conf-yaml
+              mountPath: /operator/conf
             - name: kubeconfig
               mountPath: /kubeconfig
           env:
@@ -36,13 +38,15 @@ spec:
             - name: BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT
               value: "pgo"
             - name: BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN
-              value: "eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJwZ28iLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoicGdvLXRva2VuLTcycWNjIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6InBnbyIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjJiMDBlYmQyLTcyODktMTFlYS1hMjlmLTQyMDEwYTgwMDFmNSIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpwZ286cGdvIn0.aRgytFGTG-PuC7D5OmL1MVGipu7ZRT8FGnRDqoL6QCDQavJT1lA-hh-BQ1g-tvyplKMKamqprSGVwW8JfP4r7x97gWlcAW4Wfbl_qcqLe8XokWBU9nuK5QZBtRw4mZWCWVLs5dGX4sGjTqhJJ9dHEaeKH07AndRybESfOpdxgWXeCiizrDaZH8Hv6eRCNuDjn1v3NYpl-G4DDLxaiP9C7DAoUpzZ9obMGIpKizGs-18IrttFa9kyjsYApSM-gQ_QCvd-pz15w1tqpE0VphU8lKzJJBiwvb6Deh_GBvP1RJX0sVKFdPo-y_bOWXIb84jEks_cRE6gDkDL5k6g5J8buA"
+              value: "eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJwZ28iLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoicGdvLXRva2VuLXpqNTV2Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6InBnbyIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjJiMDBlYmQyLTcyODktMTFlYS1hMjlmLTQyMDEwYTgwMDFmNSIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpwZ286cGdvIn0.Bc26AL98asQW3xpLvuwOpdx82k3NuxciWNyYw_pZlx0-D_v5GwHjU-AjCXDFVAbqaxsCFkCs5q7acfvA9e0Nc20VzX9hrt5uq9dYfdmut8cN4VdJu3QNcnzjM-7ppcJJFUfGM2M0aixTZrRRYPABk4eOKCnwo4UBa8GjLviv44PlXLwwVLHBgBQyiOmBLjkU5kgrsQfzwZQ3njwm43QrZR2chbgWAO5TDZE0RE278xa_05Zhkn5qu4iTwEUI3Ej_RB4afVGEWViseGnFrrMUh4rmZfblCE4H8HFdocIW18KCZkNrpEGdmLLwvIzOyjpuCr6Yh65O1eaZk5W5NCbIDw"
             - name: OPERATOR_COMMAND
               value: {{ .Values.command | default "deploy" | quote }}
             - name: OPERATOR_IMAGES
               value: {{ .Values.image.repository | quote }}
             - name: OPERATOR_POD
-              value: {{ .Values.podName | default "percona-xtradb-cluster-operator" | quote }}
+              value: {{ .Values.podName | default "postgres-operator" | quote }}
+            - name: OPERATOR_CLIENT_POD
+              value: {{ .Values.podName | default "pgo-client" | quote }}
             - name: BACKUP_NAME
               value: {{ .Values.backupName | default "" | quote }}
             - name: PERCONA_OPERATOR_VERSION
@@ -55,6 +59,9 @@ spec:
         - name: postgres-operator-yaml
           configMap:
             name: {{ include "postgres-operator.fullname" . }}
+        - name: postgres-operator-conf-yaml
+          configMap:
+            name: {{ include "postgres-operator.fullname" . }}-conf
         - name: kubeconfig
           configMap:
             name: {{ include "postgres-operator.fullname" . }}-kubeconfig

@@ -1,10 +1,9 @@
-# pgo-client.yaml
-pgoClientYaml: |-
   apiVersion: apps/v1
   kind: Deployment
   metadata:
     name: pgo-client
     labels:
+      name: pgo-client
       vendor: crunchydata
   spec:
     replicas: 1
@@ -20,20 +19,20 @@ pgoClientYaml: |-
       spec:
         containers:
         - name: pgo
-          image: "{{ .Values.pgo_image_prefix }}/pgo-client:{{ .Values.pgo_image_tag }}"
+          image: "crunchydata/pgo-client:centos7-4.2.1"
           imagePullPolicy: IfNotPresent
           env:
           - name: PGO_APISERVER_URL
-            value: "{{ .Values.pgo_apiserver_url }}:{{ .Values.pgo_apiserver_port }}"
+            value: "https://postgres-operator:8443"
           - name: PGOUSERNAME
             valueFrom:
               secretKeyRef:
-                name: pgouser-{{ .Values.pgo_admin_username }}
+                name: pgouser-pgoadmin
                 key: username
           - name: PGOUSERPASS
             valueFrom:
               secretKeyRef:
-                name: pgouser-{{ .Values.pgo_admin_username }}
+                name: pgouser-pgoadmin
                 key: password
           - name: PGO_CA_CERT
             value: pgo-tls/client.crt
@@ -47,10 +46,9 @@ pgoClientYaml: |-
         volumes:
         - name: pgo-tls-volume
           secret:
-            secretName: "{{ .Values.pgo_client_cert_secret }}"
+            secretName: "pgo.tls"
             items:
             - key: tls.crt
               path: client.crt
             - key: tls.key
               path: client.pem
-  

@@ -1,4 +1,4 @@
-## Documentation for configuring a MySQL Cluster can be found at https://www.percona.com/doc/kubernetes-operator-for-pxc/index.html#configuration
+## Documentation for configuring a Postgres Cluster can be found at https://access.crunchydata.com/documentation/postgres-operator/4.2.1/configuration/
 ## The (yaml) configuration files can be found in the deploy folder
 
 nameOverride: ""
@@ -6,11 +6,11 @@ fullnameOverride: ""
 
 # Image used for the job that will apply the operator yaml files for the relevant command (see below)
 image:
-  repository: gcr.io/saas-rnd-reito01/gkedue1/mysql-operator/mysql-operator
-  tag: 1.0.1
+  repository: gcr.io/neural-cortex-272213/pgo
+  tag: 1.0.4
   pullPolicy: IfNotPresent
 
-podName: percona-xtradb-cluster-operator
+podName: postgres-operator
 
 # Command to run. Applies yaml from the operator folder:
 ## deploy-cluster:  applies backup-s3.yaml, rbac.yaml, operator.yaml, secrets.yaml, ss-secrets.yaml, cr.yaml
@@ -22,7 +22,7 @@ podName: percona-xtradb-cluster-operator
 ## update-cluster:  provide the Percona Operator and API versions and cluster name to update. Patches cluster pods to defined version.
 # Ensure the yaml in the operator folder contains what you want to apply before triggering the CD Pipeline
 # See https://www.percona.com/doc/kubernetes-operator-for-pxc/operator.html for options
-command: restore-cluster
+command: deploy-cluster
 
 # If deleting a backup, provide the name
 backupName: <backup-name>
