@@ -52,35 +52,35 @@ spec:
             - name: CLUSTER_NAME
               value: {{ .Values.clusterName | quote }}
             - name: PGOADMIN_USERNAME
-              value: {{ .Values.perconaOperatorVersion | default "pgoadmin" | quote }}
+              value: {{ .Values.pgoadminUsername | default "pgoadmin" | quote }}
             - name: PGOADMIN_PASSWORD
-              value: {{ .Values.perconaApiVersion | default "pgoadmin" | quote }}
+              value: {{ .Values.pgoadminPassword | default "pgoadmin" | quote }}
             - name: PGOADMIN_PERMS
-              value: {{ .Values.perconaOperatorVersion | default "*" | quote }}
+              value: {{ .Values.pgoadminPerms | default "*" | quote }}
             - name: PGO_INSTALLATION_NAME
-              value: {{ .Values.perconaApiVersion | default "dev" | quote }}
+              value: {{ .Values.pgoInstallationName | default "dev" | quote }}
             - name: PGO_IMAGE_PREFIX
-              value: {{ .Values.perconaOperatorVersion | default "crunchydata" | quote }}
+              value: {{ .Values.pgoImagePrefix | default "crunchydata" | quote }}
             - name: PGO_BASEOS
-              value: {{ .Values.perconaApiVersion | default "centos7" | quote }}
+              value: {{ .Values.pgoBaseos | default "centos7" | quote }}
             - name: PGO_VERSION
-              value: {{ .Values.perconaApiVersion | default "4.2.1" | quote }}
+              value: {{ .Values.pgoVersion | default "4.2.1" | quote }}
             - name: PGO_APISERVER_PORT
-              value: {{ .Values.perconaApiVersion | default "8443" | quote }}
+              value: {{ .Values.pgoApiserverPort | default "8443" | quote }}
             - name: DISABLE_TLS
-              value: {{ .Values.perconaApiVersion | default false | quote }}
+              value: {{ .Values.disableTls | default false | quote }}
             - name: TLS_NO_VERIFY
-              value: {{ .Values.perconaApiVersion | default false | quote }}
+              value: {{ .Values.tlsNoVerify | default false | quote }}
             - name: TLS_CA_TRUST
-              value: {{ .Values.perconaApiVersion | default "" | quote }}
+              value: {{ .Values.tlsCaTrust | default "" | quote }}
             - name: ADD_OS_TRUSTSTORE
-              value: {{ .Values.perconaApiVersion | default false| quote }}
+              value: {{ .Values.addOsTruststore | default false| quote }}
             - name: NOAUTH_ROUTES
-              value: {{ .Values.perconaApiVersion | default "" | quote }}
+              value: {{ .Values.noauthRoutes | default "" | quote }}
             - name: EXCLUDE_OS_TRUST
-              value: {{ .Values.perconaApiVersion | default false | quote }}
+              value: {{ .Values.excludeOsTrust | default false | quote }}
             - name: DISABLE_EVENTING
-              value: {{ .Values.perconaApiVersion | default false | quote }}
+              value: {{ .Values.disableEventing | default false | quote }}
       volumes:
         - name: postgres-operator-yaml
           configMap:

@@ -33,3 +33,18 @@ backupType: FULL
 perconaOperatorVersion: 1.3.0
 perconaApiVersion: v1-3-0
 clusterName: cluster1
+pgoadminUsername: pgoadmin
+pgoadminPassword: pgoadmin
+pgoadminPerms: *
+pgoInstallationName: dev
+pgoImagePrefix: crunchydata
+pgoBaseos: centos7
+pgoVersion: 4.2.1
+pgoApiserverPort: 8443
+disableTls: false
+tlsNoVerify: false
+tlsCaTrust: 
+addOsTruststore: false
+noauthRoutes: 
+excludeOsTrust: false 
+disableEventing: false
