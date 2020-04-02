@@ -55,6 +55,8 @@ spec:
               value: {{ .Values.pgoadminUsername | default "pgoadmin" | quote }}
             - name: PGOADMIN_PASSWORD
               value: {{ .Values.pgoadminPassword | default "pgoadmin" | quote }}
+            - name: PGOADMIN_ROLENAME
+              value: {{ .Values.pgoadminRole | default "pgoadmin" | quote }}
             - name: PGOADMIN_PERMS
               value: {{ .Values.pgoadminPerms | default "*" | quote }}
             - name: PGO_INSTALLATION_NAME
