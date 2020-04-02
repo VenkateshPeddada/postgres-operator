@@ -361,7 +361,7 @@ export PATH=$PATH:$GOBIN
 export NAMESPACE=pgo
 export PGO_INSTALLATION_NAME=dev
 export PGO_OPERATOR_NAMESPACE=pgo
-export PGO_CMD=kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN}
+export PGO_CMD=kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} 
 export PGOROOT=/home/default/operator
 export PGO_IMAGE_PREFIX=crunchydata
 export PGO_BASEOS=centos7
