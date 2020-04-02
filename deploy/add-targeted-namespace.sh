@@ -14,7 +14,8 @@
 
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-echo $DIR "is the directory in add-targeted-namespace script"
+
+echo "in the directory" $DIR  "add-targeted-namespace script"
 # the name of the service account utilized by the PG pods
 PG_SA="pgo-pg"
 

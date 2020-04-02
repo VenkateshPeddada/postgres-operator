@@ -274,7 +274,7 @@ setupnamespaces(){
 	echo "creating namespaces for the Operator to watch and create PG clusters into..."
 	for ns in "${array[@]}"
 	do
-		kubectl_token get namespace $ns > /dev/null 2> /dev/null
+		kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} get namespace $ns > /dev/null 2> /dev/null
 
 		if [ $? -eq 0 ]
 		then
