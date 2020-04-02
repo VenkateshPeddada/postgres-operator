@@ -35,27 +35,27 @@ operator_pod_running() {
 #revoke_service_account_tokens() {
 #    kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} get secrets --namespace ${BASE_KUBERNETES_NAMESPACE} | grep ${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT}-token | awk '{print $1}' | xargs -I {} kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} delete secret {} --namespace ${BASE_KUBERNETES_NAMESPACE}
 #}
-setup(){
+#setup(){
 
-	echo "Ensuring project dependencies..."
-	EVTDIR="/home/default/operator/bin/pgo-event"
+#	echo "Ensuring project dependencies..."
+#	EVTDIR="/home/default/operator/bin/pgo-event"
 
-	mkdir $GOPATH
-	chmod 775 $GOPATH
+#	mkdir $GOPATH
+#	chmod 775 $GOPATH
 	
-	mkdir $GOBIN
-	chmod 775 $GOBIN
+#	mkdir $GOBIN
+#	chmod 775 $GOBIN
 	
 	# Precondition checks
-	if [ "$GOPATH" = "" ]; then
+#	if [ "$GOPATH" = "" ]; then
 		# Alternatively, take dep approach of go env GOPATH later in the process
-		echo "GOPATH not defined, exiting..." >&2
-		exit 1
-	fi
-	if ! (echo $PATH | egrep -q "$GOPATH/bin") ; then
-		echo '$GOPATH/bin not part of $PATH, exiting...' >&2
-		exit 2
-	fi
+#		echo "GOPATH not defined, exiting..." >&2
+#		exit 1
+#	fi
+#	if ! (echo $PATH | egrep -q "$GOPATH/bin") ; then
+#		echo '$GOPATH/bin not part of $PATH, exiting...' >&2
+#		exit 2
+#	fi
 
 
 	# Idempotent installations
@@ -71,24 +71,24 @@ setup(){
 #		fi
 #	fi
 
-	if which go; then
-		echo -n "  Found: " && go version
-	else
-		echo "=== Installing golang ==="
-		 yum -y install golang
-	fi
+#	if which go; then
+#		echo -n "  Found: " && go version
+#	else
+#		echo "=== Installing golang ==="
+#		 yum -y install golang
+#	fi
 
-	if ! [ -f $EVTDIR/nsqd -a -f $EVTDIR/nsqadmin ]; then
-		echo "=== Installing NSQ binaries ==="
-		NSQ=nsq-1.1.0.linux-amd64.go1.10.3
-		curl -o $NSQ.tar.gz https://s3.amazonaws.com/bitly-downloads/nsq/$NSQ.tar.gz
-		tar xz -f nsq-1.1.0.linux-amd64.go1.10.3.tar.gz -C $EVTDIR
-		rm -rf nsq-1.1.0.linux-amd64.go1.10.3.tar.gz
-		cd $EVTDIR
-		mv $NSQ/bin/* .
-		rm -rf $NSQ
+#	if ! [ -f $EVTDIR/nsqd -a -f $EVTDIR/nsqadmin ]; then
+#		echo "=== Installing NSQ binaries ==="
+#		NSQ=nsq-1.1.0.linux-amd64.go1.10.3
+#		curl -o $NSQ.tar.gz https://s3.amazonaws.com/bitly-downloads/nsq/$NSQ.tar.gz
+#		tar xz -f nsq-1.1.0.linux-amd64.go1.10.3.tar.gz -C $EVTDIR
+#		rm -rf nsq-1.1.0.linux-amd64.go1.10.3.tar.gz
+#		cd $EVTDIR
+#		mv $NSQ/bin/* .
+#		rm -rf $NSQ
 		
-	fi
+#	fi
 
 #	if which docker; then
 		# Suppress errors for this call, as docker returns non-zero when it can't talk to the daemon
@@ -115,23 +115,23 @@ setup(){
 #		fi
 #	fi
 
-	if which dep; then
-		echo -n "  Found: " && (dep version | egrep '^ version')
-	else
-		echo "=== Installing dep ==="
-		curl -S https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-	fi
+#	if which dep; then
+#		echo -n "  Found: " && (dep version | egrep '^ version')
+#	else
+#		echo "=== Installing dep ==="
+#		curl -S https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+#	fi
 
-	if which expenv; then
-		echo "  Found expenv"
-	else
-		echo "=== Installing expenv ==="
-		yum install -y git
+#	if which expenv; then
+#		echo "  Found expenv"
+#	else
+#		echo "=== Installing expenv ==="
+#		yum install -y git
 		# TODO: expenv uses Go modules, could retrieve specific version
-		go get github.com/blang/expenv
-	fi
+#		go get github.com/blang/expenv
+#	fi
 
-}
+#}
 
 installrbac(){
 
@@ -222,10 +222,7 @@ install_bootstrap_creds(){
 	DIR="/home/default/operator/deploy"
 	# fill out these variables if you want to change the
 	# default pgo bootstrap user and role
-	export PGOADMIN_USERNAME=pgoadmin
-	export PGOADMIN_PASSWORD=pgoadmin
-	export PGOADMIN_ROLENAME=pgoadmin
-	export PGOADMIN_PERMS="*"
+
 
 	# see if the bootstrap pgorole Secret exists or not, deleting it if found
 	kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} get secret pgorole-$PGOADMIN_ROLENAME -n $PGO_OPERATOR_NAMESPACE 2> /dev/null > /dev/null
@@ -353,28 +350,14 @@ echo Processing ${OPERATOR_COMMAND} request at ${RUN_TIME}
 export KUBECONFIG=/kubeconfig/kubeconfig
 alias kubectl_token="kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN}"
 
-export PGOADMIN_USERNAME=pgoadmin
-export PGOADMIN_PASSWORD=password
 export GOPATH=/odev
 export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
-export NAMESPACE=pgo
-export PGO_INSTALLATION_NAME=dev
-export PGO_OPERATOR_NAMESPACE=pgo
-export PGO_CMD=kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} 
+export NAMESPACE=${KUBERNETES_NAMESPACE}
+export PGO_OPERATOR_NAMESPACE=${KUBERNETES_NAMESPACE}
+export PGO_CMD="kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN}"
 export PGOROOT=/home/default/operator
-export PGO_IMAGE_PREFIX=crunchydata
-export PGO_BASEOS=centos7
-export PGO_VERSION=4.2.1
 export PGO_IMAGE_TAG=$PGO_BASEOS-$PGO_VERSION
-export PGO_APISERVER_PORT=8443
-export DISABLE_TLS=false
-export TLS_NO_VERIFY=false
-export TLS_CA_TRUST=""
-export ADD_OS_TRUSTSTORE=false
-export NOAUTH_ROUTES=""
-export EXCLUDE_OS_TRUST=false
-export DISABLE_EVENTING=false
 export PGO_CA_CERT=$PGOROOT/conf/postgres-operator/server.crt
 export PGO_CLIENT_CERT=$PGOROOT/conf/postgres-operator/server.crt
 export PGO_CLIENT_KEY=$PGOROOT/conf/postgres-operator/server.key
@@ -435,7 +418,17 @@ case "${OPERATOR_COMMAND}" in
 
     # Apply backup
     echo Applying backup.yaml in ${KUBERNETES_NAMESPACE} namespace
-    kubectl_token apply -f /home/default/operator/backup.yaml
+    pod_name=`kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} get pod -l name=pgo-client -o jsonpath="{.items[0].metadata.name}" -n ${KUBERNETES_NAMESPACE}`
+	if [ "${BACKUP_TYPE}" == "FULL" ]
+	then
+		kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} exec  ${pod_name} -n ${KUBERNETES_NAMESPACE} -- pgo create backup  ${CLUSTER_NAME} --backup-opts="--type=full"
+	elif [ "${BACKUP_TYPE}" == "DIFF" ]
+	then
+		kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} exec  ${pod_name} -n ${KUBERNETES_NAMESPACE} -- pgo create backup  ${CLUSTER_NAME} --backup-opts="--type=diff"
+	else
+		kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} exec  ${pod_name} -n ${KUBERNETES_NAMESPACE} -- pgo create backup  ${CLUSTER_NAME} --backup-opts="--type=incr"	
+	fi
+	
     sleep 10
 
 ;;
@@ -448,7 +441,9 @@ case "${OPERATOR_COMMAND}" in
 
     # Apply restore
     echo Applying restore.yaml in ${KUBERNETES_NAMESPACE} namespace
-    kubectl_token apply -f /home/default/operator/restore.yaml
+	
+	kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} exec  ${pod_name} -n ${KUBERNETES_NAMESPACE} -- pgo restore ${CLUSTER_NAME} --backup-opts="--type=full" --no-prompt 
+	
     sleep 10
 ;;
 'delete-cluster')
@@ -460,7 +455,8 @@ case "${OPERATOR_COMMAND}" in
 
     # Apply delete
     echo Deleting cr.yaml in ${KUBERNETES_NAMESPACE} namespace
-    kubectl_token delete -f /home/default/operator/cr.yaml
+    pod_name=`kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} get pod -l name=pgo-client -o jsonpath="{.items[0].metadata.name}" -n ${KUBERNETES_NAMESPACE}`
+	kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} exec  ${pod_name} -n ${KUBERNETES_NAMESPACE} -- pgo delete cluster ${CLUSTER_NAME} --no-prompt
     sleep 10
 ;;
 'list-backups')
