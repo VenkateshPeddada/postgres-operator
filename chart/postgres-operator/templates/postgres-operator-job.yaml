@@ -46,7 +46,7 @@ spec:
             - name: OPERATOR_POD
               value: {{ .Values.podName | default "postgres-operator" | quote }}
             - name: OPERATOR_CLIENT_POD
-              value: {{ .Values.podName | default "pgo-client" | quote }}
+              value: {{ .Values.pgoPodName | default "pgo-client" | quote }}
             - name: BACKUP_TYPE
               value: {{ .Values.backupType | default "FULL" | quote }}
             - name: CLUSTER_NAME

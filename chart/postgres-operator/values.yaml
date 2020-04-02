@@ -11,6 +11,7 @@ image:
   pullPolicy: IfNotPresent
 
 podName: postgres-operator
+pgoPodName: pgo-client
 
 # Command to run. Applies yaml from the operator folder:
 ## deploy-cluster:  applies backup-s3.yaml, rbac.yaml, operator.yaml, secrets.yaml, ss-secrets.yaml, cr.yaml
