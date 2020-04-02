@@ -268,23 +268,23 @@ setupnamespaces(){
 		echo namespace $PGO_OPERATOR_NAMESPACE created
 	fi
 
-	#IFS=', ' read -r -a array <<< "$NAMESPACE"
+	IFS=', ' read -r -a array <<< "$NAMESPACE"
 
-	#echo ""
-	#echo "creating namespaces for the Operator to watch and create PG clusters into..."
-	#for ns in "${array[@]}"
-	#do
-	#	kubectl_token get namespace $ns > /dev/null 2> /dev/null
+	echo ""
+	echo "creating namespaces for the Operator to watch and create PG clusters into..."
+	for ns in "${array[@]}"
+	do
+		kubectl_token get namespace $ns > /dev/null 2> /dev/null
 
-	#	if [ $? -eq 0 ]
-	#	then
-	#		echo namespace $ns already exists, updating...
-	#		$PGOROOT/deploy/add-targeted-namespace.sh $ns > /dev/null
-	#	else
-	#		echo namespace $ns creating...
-	#		$PGOROOT/deploy/add-targeted-namespace.sh $ns > /dev/null
-	#	fi
-	#done
+		if [ $? -eq 0 ]
+		then
+			echo namespace $ns already exists, updating...
+			$PGOROOT/deploy/add-targeted-namespace.sh $ns > /dev/null
+		else
+			echo namespace $ns creating...
+			$PGOROOT/deploy/add-targeted-namespace.sh $ns > /dev/null
+		fi
+	done
 
 }
 
@@ -361,7 +361,7 @@ export PATH=$PATH:$GOBIN
 export NAMESPACE=pgo
 export PGO_INSTALLATION_NAME=dev
 export PGO_OPERATOR_NAMESPACE=pgo
-export PGO_CMD=kubectl_token
+export PGO_CMD=kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN}
 export PGOROOT=/home/default/operator
 export PGO_IMAGE_PREFIX=crunchydata
 export PGO_BASEOS=centos7
