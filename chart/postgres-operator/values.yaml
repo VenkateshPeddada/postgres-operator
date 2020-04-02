@@ -26,6 +26,7 @@ command: deploy-cluster
 
 # If deleting a backup, provide the name
 backupName: <backup-name>
+backupType: FULL
 
 # If updating a cluster, provide the Percona operator version, Percona API version and cluster name
 # Note, the images for the updated version must be available to be pulled from the mysql-operator namespace
