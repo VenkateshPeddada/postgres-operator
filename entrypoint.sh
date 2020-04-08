@@ -9,6 +9,9 @@ operator_pod_running() {
     do
         OPERATOR_RUNNING=`kubectl_token --namespace ${KUBERNETES_NAMESPACE} get pods | grep ${OPERATOR_POD}- | grep Running | wc -l`
 		OPERATOR_CLIENT_RUNNING=`kubectl_token --namespace ${KUBERNETES_NAMESPACE} get pods | grep ${OPERATOR_CLIENT_POD}- | grep Running | wc -l`
+		
+		echo OPERATOR_RUNNING value is ${OPERATOR_RUNNING}
+		echo OPERATOR_CLIENT_RUNNING value is ${OPERATOR_CLIENT_RUNNING}
 
         if [ "${OPERATOR_RUNNING}" == "1" ] && [ "${OPERATOR_CLIENT_RUNNING}" == "1" ]
         then
@@ -421,12 +424,12 @@ case "${OPERATOR_COMMAND}" in
     pod_name=`kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} get pod -l name=pgo-client -o jsonpath="{.items[0].metadata.name}" -n ${KUBERNETES_NAMESPACE}`
 	if [ "${BACKUP_TYPE}" == "FULL" ]
 	then
-		kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} exec  ${pod_name} -n ${KUBERNETES_NAMESPACE} -- pgo create backup  ${CLUSTER_NAME} --backup-opts="--type=full"
+		kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} exec  ${pod_name} -n ${KUBERNETES_NAMESPACE} -- pgo backup  ${CLUSTER_NAME} --backup-opts="--type=full"
 	elif [ "${BACKUP_TYPE}" == "DIFF" ]
 	then
-		kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} exec  ${pod_name} -n ${KUBERNETES_NAMESPACE} -- pgo create backup  ${CLUSTER_NAME} --backup-opts="--type=diff"
+		kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} exec  ${pod_name} -n ${KUBERNETES_NAMESPACE} -- pgo backup  ${CLUSTER_NAME} --backup-opts="--type=diff"
 	else
-		kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} exec  ${pod_name} -n ${KUBERNETES_NAMESPACE} -- pgo create backup  ${CLUSTER_NAME} --backup-opts="--type=incr"	
+		kubectl --token=${BASE_KUBERNETES_NAMESPACE_SERVICE_ACCOUNT_TOKEN} exec  ${pod_name} -n ${KUBERNETES_NAMESPACE} -- pgo backup  ${CLUSTER_NAME} --backup-opts="--type=incr"	
 	fi
 	
     sleep 10
